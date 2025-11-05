@@ -15,11 +15,6 @@ class Client extends Model
         'email',
     ];
 
-    /**
-     * Get the transactions for the client.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
