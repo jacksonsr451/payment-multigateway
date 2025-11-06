@@ -1,10 +1,9 @@
 <?php
 
-use App\Models\Client;
-use App\Models\Gateway;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -19,10 +18,19 @@ return new class extends Migration
             $table->unsignedInteger('amount');
             $table->string('card_last_numbers', 4);
             $table->timestamps();
-
-            $table->check("status in ('PENDING','APPROVED','DECLINED','FAILED')");
-            $table->check('amount > 0');
         });
+
+        DB::statement("
+            ALTER TABLE transactions 
+            ADD CONSTRAINT chk_transactions_status 
+            CHECK (status IN ('PENDING','APPROVED','DECLINED','FAILED'))
+        ");
+
+        DB::statement("
+            ALTER TABLE transactions 
+            ADD CONSTRAINT chk_transactions_amount 
+            CHECK (amount > 0)
+        ");
     }
 
     public function down(): void

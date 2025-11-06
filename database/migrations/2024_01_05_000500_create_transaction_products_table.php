@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -16,8 +17,12 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['transaction_id', 'product_id']);
-            $table->check('quantity > 0');
         });
+
+        DB::statement("
+            ALTER TABLE transaction_products 
+            ADD CONSTRAINT chk_quantity CHECK (quantity > 0)
+        ");
     }
 
     public function down(): void
