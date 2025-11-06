@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: payment-multigateway-app
     ports:
-      - "8000:8000"
+      - "8008:8000"
     volumes:
       - ./:/var/www/html
     env_file:
@@ -13,34 +13,30 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-    command: sh -c "composer install && php artisan serve --host=0.0.0.0 --port=8000"
+    command: sh -c "composer install && php artisan serve --host=0.0.0.0 --port=8008"
     restart: unless-stopped
 
   mysql:
     image: mysql:8.0
     container_name: payment-multigateway-mysql
-    ports:
-      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: payment_multigateway
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app123
+    ports:
+      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
       interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 5s
+      timeout: 10s
+      retries: 15
+      start_period: 60s
     restart: unless-stopped
 
-  gateways-mock:
-    image: matheusprotzen/gateways-mock
-    container_name: payment-multigateway-gateways-mock
-    ports:
-      - "3001:3001"
-      - "3002:3002"
-    restart: unless-stopped
 
 volumes:
   mysql_data:

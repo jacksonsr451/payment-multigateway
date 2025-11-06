@@ -25,7 +25,7 @@ make up
 docker compose up -d --build
 ```
 
-- API: http://localhost:8000  
+- API: http://localhost:8008  
 - Gateways mockados: http://localhost:3001 e http://localhost:3002  
 - Banco: MySQL 8 disponível em `localhost:3306` (usuário: root / senha: root / base: payment_multigateway)
 
